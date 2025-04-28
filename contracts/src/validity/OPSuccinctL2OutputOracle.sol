@@ -174,11 +174,11 @@ contract OPSuccinctL2OutputOracle is Initializable, ISemver {
     error L1BlockHashNotCheckpointed();
 
     /// @notice Semantic version.
-    /// @custom:semver v1.0.0
-    string public constant version = "v1.0.0";
+    /// @custom:semver v2.0.0
+    string public constant version = "v2.0.0";
 
     /// @notice The version of the initializer on the contract. Used for managing upgrades.
-    uint8 public constant initializerVersion = 1;
+    uint8 public constant initializerVersion = 2;
 
     ////////////////////////////////////////////////////////////
     //                        Modifiers                       //
@@ -363,9 +363,10 @@ contract OPSuccinctL2OutputOracle is Initializable, ISemver {
     /// @param _outputRoot    The L2 output of the checkpoint block.
     /// @param _l2BlockNumber The L2 block number that resulted in _outputRoot.
     /// @param _l1BlockNumber The block number with the specified block hash.
+    /// @param _proverAddress Linked to the proof to only allow its producer to submit
     /// @dev Modified the function signature to exclude the `_l1BlockHash` parameter, as it's redundant
-    /// for OP Succinct given the `_l1BlockNumber` parameter.
-    function proposeL2Output(bytes32 _outputRoot, uint256 _l2BlockNumber, uint256 _l1BlockNumber, bytes memory _proof)
+    /// for OP Succinct given the `_l1BlockNumber` parameter
+    function proposeL2Output(bytes32 _outputRoot, uint256 _l2BlockNumber, uint256 _l1BlockNumber, bytes memory _proof, address _proverAddress)
         external
         payable
     {
@@ -406,7 +407,7 @@ contract OPSuccinctL2OutputOracle is Initializable, ISemver {
             claimBlockNum: _l2BlockNumber,
             rollupConfigHash: rollupConfigHash,
             rangeVkeyCommitment: rangeVkeyCommitment,
-            proverAddress: address(0)
+            proverAddress: _proverAddress
         });
 
         ISP1Verifier(verifier).verifyProof(aggregationVkey, abi.encode(publicValues), _proof);

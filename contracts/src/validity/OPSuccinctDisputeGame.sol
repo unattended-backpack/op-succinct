@@ -39,7 +39,6 @@ contract OPSuccinctDisputeGame is ISemver, Clone, IDisputeGame {
     ////////////////////////////////////////////////////////////
 
     function initialize() external payable {
-        // TODO (aleph) - Need to check that this is actually needed, since the main branch does not have it
         require(Timestamp.unwrap(createdAt) == 0, "Already initialized");
 
         createdAt = Timestamp.wrap(uint64(block.timestamp));
